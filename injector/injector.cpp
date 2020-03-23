@@ -1,5 +1,6 @@
 #include <windows.h>
 #include <windowsx.h>
+#include <psapi.h>
 #include <shlwapi.h>
 #include <tlhelp32.h>
 #include <tchar.h>
@@ -26,6 +27,7 @@ BOOL DoCheckBits(HANDLE hProcess)
     SYSTEM_INFO info;
     GetSystemInfo(&info);
 
+    WCHAR szPath[MAX_PATH];
     switch (info.wProcessorArchitecture)
     {
 #ifdef _WIN64
@@ -36,6 +38,12 @@ BOOL DoCheckBits(HANDLE hProcess)
         return TRUE;
 #else
     case PROCESSOR_ARCHITECTURE_INTEL:
+        if (GetModuleFileNameExW(hProcess, NULL, szPath, MAX_PATH))
+        {
+            DWORD dwType;
+            if (GetBinaryTypeW(szPath, &dwType) && dwType == SCS_64BIT_BINARY)
+                return FALSE;
+        }
         return TRUE;
 #endif
     }
