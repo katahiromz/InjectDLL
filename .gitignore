@@ -30,3 +30,5 @@ injector*.exe
 payload*.dll
 a.txt
 *-old
+build32
+build64

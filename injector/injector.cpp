@@ -7,6 +7,21 @@
 #include <cassert>
 #include "../config.h"
 
+BOOL IsWow64(HANDLE hProcess)
+{
+    typedef BOOL (WINAPI *FN_IsWow64Process)(HANDLE, LPBOOL);
+    HMODULE hKernel32 = GetModuleHandleA("kernel32");
+    FN_IsWow64Process pIsWow64Process =
+        (FN_IsWow64Process)GetProcAddress(hKernel32, "IsWow64Process");
+    if (!pIsWow64Process)
+        return FALSE;
+
+    BOOL bWow64;
+    if ((*pIsWow64Process)(hProcess, &bWow64))
+        return bWow64;
+    return FALSE;
+}
+
 BOOL DoCheckBits(HANDLE hProcess)
 {
     SYSTEM_INFO info;
@@ -17,6 +32,8 @@ BOOL DoCheckBits(HANDLE hProcess)
 #ifdef _WIN64
     case PROCESSOR_ARCHITECTURE_AMD64:
     case PROCESSOR_ARCHITECTURE_IA64:
+        if (IsWow64(hProcess))
+            return FALSE;
         return TRUE;
 #else
     case PROCESSOR_ARCHITECTURE_INTEL:
@@ -47,13 +64,13 @@ BOOL DoInjectDLL(DWORD pid, LPCWSTR pszDllFile)
     AutoCloseHandle hProcess(OpenProcess(PROCESS_ALL_ACCESS, FALSE, pid));
     if (!hProcess)
     {
-        assert(0);
+        MessageBoxW(NULL, L"!OpenProcess", NULL, MB_ICONERROR);
         return FALSE;
     }
 
     if (!DoCheckBits(hProcess))
     {
-        assert(0);
+        MessageBoxW(NULL, L"!DoCheckBits(hProcess)", NULL, MB_ICONERROR);
         return FALSE;
     }
 
@@ -61,7 +78,7 @@ BOOL DoInjectDLL(DWORD pid, LPCWSTR pszDllFile)
     LPVOID pParam = VirtualAllocEx(hProcess, NULL, cbParam, MEM_COMMIT, PAGE_EXECUTE_READWRITE);
     if (!pParam)
     {
-        assert(0);
+        MessageBoxW(NULL, L"Out of memory!", NULL, MB_ICONERROR);
         return FALSE;
     }
 
@@ -71,7 +88,7 @@ BOOL DoInjectDLL(DWORD pid, LPCWSTR pszDllFile)
     FARPROC pLoadLibraryW = GetProcAddress(hKernel32, "LoadLibraryW");
     if (!pLoadLibraryW)
     {
-        assert(0);
+        MessageBoxW(NULL, L"!pLoadLibraryW", NULL, MB_ICONERROR);
         VirtualFreeEx(hProcess, pParam, cbParam, MEM_RELEASE);
         return FALSE;
     }
@@ -80,7 +97,7 @@ BOOL DoInjectDLL(DWORD pid, LPCWSTR pszDllFile)
         (LPTHREAD_START_ROUTINE)pLoadLibraryW, pParam, 0, NULL));
     if (!hThread)
     {
-        assert(0);
+        MessageBoxW(NULL, L"!CreateRemoteThread", NULL, MB_ICONERROR);
         VirtualFreeEx(hProcess, pParam, cbParam, MEM_RELEASE);
         return FALSE;
     }
@@ -143,11 +160,14 @@ BOOL DoUninjectDLL(DWORD pid, LPCWSTR pszDllFile)
     AutoCloseHandle hProcess(OpenProcess(PROCESS_ALL_ACCESS, FALSE, pid));
     assert(hProcess);
     if (!hProcess)
+    {
+        MessageBoxW(NULL, L"!OpenProcess", NULL, MB_ICONERROR);
         return FALSE;
+    }
 
     if (!DoCheckBits(hProcess))
     {
-        assert(0);
+        MessageBoxW(NULL, L"!DoCheckBits(hProcess)", NULL, MB_ICONERROR);
         return FALSE;
     }
 
@@ -163,7 +183,7 @@ BOOL DoUninjectDLL(DWORD pid, LPCWSTR pszDllFile)
     FARPROC pLdrUnloadDll = GetProcAddress(hNTDLL, "LdrUnloadDll");
     if (!pLdrUnloadDll)
     {
-        assert(0);
+        MessageBoxW(NULL, L"!pLdrUnloadDll", NULL, MB_ICONERROR);
         return FALSE;
     }
 
@@ -171,7 +191,7 @@ BOOL DoUninjectDLL(DWORD pid, LPCWSTR pszDllFile)
         (LPTHREAD_START_ROUTINE)pLdrUnloadDll, hModule, 0, NULL));
     if (!hThread)
     {
-        assert(0);
+        MessageBoxW(NULL, L"!CreateRemoteThread", NULL, MB_ICONERROR);
         return FALSE;
     }
 
