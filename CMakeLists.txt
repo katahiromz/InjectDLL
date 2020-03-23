@@ -40,8 +40,6 @@ endif()
 
 ##############################################################################
 
-include_directories(.)
-
 if(CMAKE_SIZEOF_VOID_P EQUAL 8)
     set(INJECTOR_NAME "injector64")
     set(PAYLOAD_NAME "payload64")
