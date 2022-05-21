@@ -17,22 +17,6 @@ BOOL DoCheckBits(HANDLE hProcess)
 #endif
 }
 
-struct AutoCloseHandle
-{
-    HANDLE m_h;
-    AutoCloseHandle(HANDLE h) : m_h(h)
-    {
-    }
-    ~AutoCloseHandle()
-    {
-        CloseHandle(m_h);
-    }
-    operator HANDLE()
-    {
-        return m_h;
-    }
-};
-
 void OnInject(HWND hwnd, BOOL bInject)
 {
     BOOL bTranslated = FALSE;
