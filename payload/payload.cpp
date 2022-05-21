@@ -12,7 +12,7 @@ EXTERN_C BOOL WINAPI
 DllMain(HINSTANCE hinstDLL, DWORD fdwReason, LPVOID lpReserved)
 {
     TCHAR szText[MAX_PATH];
-    wsprintf(szText, TEXT(PAYLOAD_NAME) TEXT(".dll (PID:%lu)"), GetCurrentProcessId());
+    wsprintf(szText, PAYLOAD_NAME TEXT(".dll (PID:%lu)"), GetCurrentProcessId());
     switch (fdwReason)
     {
     case DLL_PROCESS_ATTACH:

@@ -45,6 +45,10 @@ endif()
 
 ##############################################################################
 
+# Unicode
+add_definitions(-DUNICODE -D_UNICODE)
+
+# Choose filenames
 if(CMAKE_SIZEOF_VOID_P EQUAL 8)
     set(INJECTOR_NAME "injector64")
     set(PAYLOAD_NAME "payload64")
@@ -55,9 +59,11 @@ else()
     message(FATAL_ERROR "Your compiler is not supported yet")
 endif()
 
+# setting file
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/config.h.in
                ${CMAKE_CURRENT_SOURCE_DIR}/config.h)
 
+# subdirectories
 add_subdirectory(hackKit)
 add_subdirectory(payload)
 add_subdirectory(injector)
