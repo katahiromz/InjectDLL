@@ -248,6 +248,8 @@ BOOL getModuleByName(MODULEENTRY32& module, LPCTSTR pszName, DWORD dwPID)
         return FALSE;
     }
 
+    pszName = PathFindFileName(pszName);
+
     MODULEENTRY32 me = { sizeof(me) };
 
     if (Module32First(hSnapshot, &me))
