@@ -18,7 +18,7 @@ struct AutoCloseHandle
     {
         CloseHandle(m_h);
     }
-    operator HANDLE()
+    operator HANDLE&()
     {
         return m_h;
     }
