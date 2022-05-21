@@ -32,5 +32,5 @@ HWND getWindowFromPID(DWORD dwPID = 0);
 
 BOOL enableProcessPriviledge(LPCTSTR pszSE_);
 
-BOOL doInjectDll(LPCTSTR pszDllPathName, DWORD dwPID);
-BOOL doUninjectDll(LPCTSTR pszDllPathName, DWORD dwPID);
+BOOL doInjectDll(LPCTSTR pszDllPathName, DWORD dwPID = 0);
+BOOL doUninjectDll(LPCTSTR pszDllPathName, DWORD dwPID = 0);
