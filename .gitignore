@@ -32,3 +32,5 @@ a.txt
 *-old
 build32
 build64
+.ninja*
+*.ninja
