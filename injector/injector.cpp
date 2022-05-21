@@ -8,15 +8,6 @@
 #include "../config.h"
 #include "../hackKit/hackKit.h"
 
-BOOL DoCheckBits(HANDLE hProcess)
-{
-#ifdef _WIN64
-    return isProcessWin64(hProcess);
-#else
-    return isProcessWin32(hProcess);
-#endif
-}
-
 void OnInject(HWND hwnd, BOOL bInject)
 {
     BOOL bTranslated = FALSE;
@@ -31,7 +22,7 @@ void OnInject(HWND hwnd, BOOL bInject)
     GetModuleFileName(NULL, szDllFile, _countof(szDllFile));
     PathRemoveFileSpec(szDllFile);
     PathAppend(szDllFile, PAYLOAD_NAME TEXT(".dll"));
-    //MessageBoxW(NULL, szDllFile, NULL, 0);
+    //MessageBox(NULL, szDllFile, NULL, 0);
 
     if (bInject)
     {

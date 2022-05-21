@@ -149,6 +149,7 @@ BOOL getProcessList(std::vector<PROCESSENTRY32>& processes, DWORD dwPID)
     AutoCloseHandle hSnapshot(CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0));
     if (hSnapshot == INVALID_HANDLE_VALUE)
     {
+        puts("getProcessList: FAILED");
         assert(0);
         return FALSE;
     }
@@ -183,6 +184,7 @@ BOOL getThreadList(std::vector<THREADENTRY32>& threads, DWORD dwPID, DWORD dwTID
     AutoCloseHandle hSnapshot(CreateToolhelp32Snapshot(TH32CS_SNAPTHREAD, dwPID));
     if (hSnapshot == INVALID_HANDLE_VALUE)
     {
+        puts("getThreadList: FAILED");
         assert(0);
         return FALSE;
     }
@@ -215,6 +217,7 @@ BOOL getModuleList(std::vector<MODULEENTRY32> modules, DWORD dwPID)
     AutoCloseHandle hSnapshot(CreateToolhelp32Snapshot(TH32CS_SNAPMODULE, dwPID));
     if (hSnapshot == INVALID_HANDLE_VALUE)
     {
+        puts("getModuleList: FAILED");
         assert(0);
         return FALSE;
     }
@@ -240,6 +243,7 @@ BOOL getModuleByName(MODULEENTRY32& module, LPCTSTR pszName, DWORD dwPID)
     AutoCloseHandle hSnapshot(CreateToolhelp32Snapshot(TH32CS_SNAPMODULE, dwPID));
     if (hSnapshot == INVALID_HANDLE_VALUE)
     {
+        puts("getModuleByName: FAILED");
         assert(0);
         return FALSE;
     }
@@ -258,6 +262,7 @@ BOOL getModuleByName(MODULEENTRY32& module, LPCTSTR pszName, DWORD dwPID)
         } while (Module32Next(hSnapshot, &me));
     }
 
+    puts("getModuleByName: FAILED");
     return FALSE;
 }
 
@@ -266,6 +271,7 @@ BOOL getProcessByName(PROCESSENTRY32& process, LPCTSTR pszName)
     AutoCloseHandle hSnapshot(CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0));
     if (hSnapshot == INVALID_HANDLE_VALUE)
     {
+        puts("getProcessByName: FAILED");
         assert(0);
         return FALSE;
     }
@@ -286,6 +292,7 @@ BOOL getProcessByName(PROCESSENTRY32& process, LPCTSTR pszName)
         } while (Process32Next(hSnapshot, &pe));
     }
 
+    puts("getProcessByName: FAILED");
     return FALSE;
 }
 
@@ -297,6 +304,7 @@ BOOL doInjectDll(LPCTSTR pszDllPathName, DWORD dwPID)
     AutoCloseHandle hProcess(OpenProcess(PROCESS_ALL_ACCESS, FALSE, dwPID));
     if (!hProcess)
     {
+        puts("doInjectDll: !OpenProcess");
         assert(0);
         return FALSE;
     }
@@ -305,6 +313,7 @@ BOOL doInjectDll(LPCTSTR pszDllPathName, DWORD dwPID)
     {
         if (!isProcessWin64(hProcess))
         {
+            puts("doInjectDll: !isProcessWin64");
             assert(0);
             return FALSE;
         }
@@ -313,6 +322,7 @@ BOOL doInjectDll(LPCTSTR pszDllPathName, DWORD dwPID)
     {
         if (!isProcessWin32(hProcess))
         {
+            puts("doInjectDll: !isProcessWin32");
             assert(0);
             return FALSE;
         }
@@ -322,6 +332,7 @@ BOOL doInjectDll(LPCTSTR pszDllPathName, DWORD dwPID)
     LPVOID pParam = VirtualAllocEx(hProcess, NULL, cbParam, MEM_COMMIT, PAGE_EXECUTE_READWRITE);
     if (!pParam)
     {
+        puts("doInjectDll: !VirtualAllocEx");
         assert(0);
         return FALSE;
     }
@@ -336,6 +347,7 @@ BOOL doInjectDll(LPCTSTR pszDllPathName, DWORD dwPID)
 #endif
     if (!pLoadLibrary)
     {
+        puts("doInjectDll: !pLoadLibrary");
         assert(0);
         VirtualFreeEx(hProcess, pParam, cbParam, MEM_RELEASE);
         return FALSE;
@@ -345,6 +357,7 @@ BOOL doInjectDll(LPCTSTR pszDllPathName, DWORD dwPID)
         (LPTHREAD_START_ROUTINE)pLoadLibrary, pParam, 0, NULL));
     if (!hThread)
     {
+        puts("doInjectDll: !hThread");
         assert(0);
         VirtualFreeEx(hProcess, pParam, cbParam, MEM_RELEASE);
         return FALSE;
@@ -352,6 +365,7 @@ BOOL doInjectDll(LPCTSTR pszDllPathName, DWORD dwPID)
 
     if (WaitForSingleObject(hThread, INFINITE) == WAIT_ABANDONED)
     {
+        puts("doInjectDll: !WaitForSingleObject");
         assert(0);
     }
 
@@ -367,6 +381,7 @@ BOOL doUninjectDll(LPCTSTR pszDllPathName, DWORD dwPID)
     AutoCloseHandle hProcess(OpenProcess(PROCESS_ALL_ACCESS, FALSE, dwPID));
     if (!hProcess)
     {
+        puts("doUninjectDll: !OpenProcess");
         assert(0);
         return FALSE;
     }
@@ -375,6 +390,7 @@ BOOL doUninjectDll(LPCTSTR pszDllPathName, DWORD dwPID)
     {
         if (!isProcessWin64(hProcess))
         {
+            puts("doUninjectDll: !isProcessWin64");
             assert(0);
             return FALSE;
         }
@@ -383,6 +399,7 @@ BOOL doUninjectDll(LPCTSTR pszDllPathName, DWORD dwPID)
     {
         if (!isProcessWin32(hProcess))
         {
+            puts("doUninjectDll: !isProcessWin32");
             assert(0);
             return FALSE;
         }
@@ -393,6 +410,7 @@ BOOL doUninjectDll(LPCTSTR pszDllPathName, DWORD dwPID)
     MODULEENTRY32 me = { sizeof(me) };
     if (!getModuleByName(me, pszDllName, dwPID))
     {
+        puts("doUninjectDll: !getModuleByName");
         assert(0);
         return FALSE;
     }
@@ -403,6 +421,7 @@ BOOL doUninjectDll(LPCTSTR pszDllPathName, DWORD dwPID)
     FARPROC pLdrUnloadDll = GetProcAddress(hNTDLL, "LdrUnloadDll");
     if (!pLdrUnloadDll)
     {
+        puts("doUninjectDll: !pLdrUnloadDll");
         assert(0);
         return FALSE;
     }
@@ -411,12 +430,14 @@ BOOL doUninjectDll(LPCTSTR pszDllPathName, DWORD dwPID)
         (LPTHREAD_START_ROUTINE)pLdrUnloadDll, hModule, 0, NULL));
     if (!hThread)
     {
+        puts("doUninjectDll: !hThread");
         assert(0);
         return FALSE;
     }
 
     if (WaitForSingleObject(hThread, INFINITE) == WAIT_ABANDONED)
     {
+        puts("doUninjectDll: !WaitForSingleObject");
         assert(0);
     }
 
