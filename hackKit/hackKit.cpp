@@ -216,7 +216,7 @@ BOOL getThreadList(std::vector<THREADENTRY32>& threads, DWORD dwPID, DWORD dwTID
     return !threads.empty();
 }
 
-BOOL getModuleList(std::vector<MODULEENTRY32> modules, DWORD dwPID)
+BOOL getModuleList(std::vector<MODULEENTRY32>& modules, DWORD dwPID)
 {
     if (dwPID == 0)
         dwPID = GetCurrentProcessId();

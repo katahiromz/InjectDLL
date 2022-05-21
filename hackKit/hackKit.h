@@ -22,7 +22,7 @@ WORD getWindowsArchitecture(VOID);
 
 BOOL getProcessList(std::vector<PROCESSENTRY32>& processes, DWORD dwPID = 0);
 BOOL getThreadList(std::vector<THREADENTRY32>& threads, DWORD dwPID = 0, DWORD dwTID = 0);
-BOOL getModuleList(std::vector<MODULEENTRY32> modules, DWORD dwPID = 0);
+BOOL getModuleList(std::vector<MODULEENTRY32>& modules, DWORD dwPID = 0);
 
 BOOL getProcessByName(PROCESSENTRY32& process, LPCTSTR pszName);
 BOOL getModuleByName(MODULEENTRY32& module, LPCTSTR pszName, DWORD dwPID = 0);
