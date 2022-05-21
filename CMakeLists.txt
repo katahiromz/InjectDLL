@@ -4,7 +4,12 @@
 ##############################################################################
 
 # CMake minimum version
-cmake_minimum_required(VERSION 2.4)
+cmake_minimum_required(VERSION 3.0)
+
+# CMake policy
+if(COMMAND cmake_policy)
+    cmake_policy(SET CMP0003 NEW)
+endif(COMMAND cmake_policy)
 
 # project name and languages
 project(InjectDLL C CXX RC)
@@ -53,6 +58,9 @@ endif()
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/config.h.in
                ${CMAKE_CURRENT_SOURCE_DIR}/config.h)
 
-subdirs(payload injector target)
+add_subdirectory(hackKit)
+add_subdirectory(payload)
+add_subdirectory(injector)
+add_subdirectory(target)
 
 ##############################################################################
