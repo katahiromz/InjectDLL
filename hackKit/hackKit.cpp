@@ -55,6 +55,9 @@ typedef VOID (WINAPI *FN_GetNativeSystemInfo)(SYSTEM_INFO*);
 
 BOOL IsWow64Process(HANDLE hProcess)
 {
+    if (hProcess == NULL)
+        hProcess = GetCurrentProcess();
+
     HMODULE hKernel32 = GetModuleHandleA("kernel32");
     FN_IsWow64Process pIsWow64Process =
         (FN_IsWow64Process)GetProcAddress(hKernel32, "IsWow64Process");
@@ -69,6 +72,9 @@ BOOL IsWow64Process(HANDLE hProcess)
 
 DWORD getProcessBinaryType(HANDLE hProcess)
 {
+    if (hProcess == NULL)
+        hProcess = GetCurrentProcess();
+
     WCHAR szPath[MAX_PATH];
     if (!GetModuleFileNameExW(hProcess, NULL, szPath, _countof(szPath)))
         return -1;

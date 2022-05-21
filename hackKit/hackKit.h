@@ -11,13 +11,13 @@ BOOL isWindowsXPOrGreater(void);
 BOOL isWindowsVistaOrGreater(void);
 BOOL isWindowsWin32(void);
 BOOL isWindowsWin64(void);
-BOOL IsWow64Process(HANDLE hProcess);
-BOOL isProcessWin32(HANDLE hProcess);
-BOOL isProcessWin64(HANDLE hProcess);
-BOOL isProcessIDWin32(DWORD dwPID);
-BOOL isProcessIDWin64(DWORD dwPID);
+BOOL IsWow64Process(HANDLE hProcess = NULL);
+BOOL isProcessWin32(HANDLE hProcess = NULL);
+BOOL isProcessWin64(HANDLE hProcess = NULL);
+BOOL isProcessIDWin32(DWORD dwPID = 0);
+BOOL isProcessIDWin64(DWORD dwPID = 0);
 
-DWORD getProcessBinaryType(HANDLE hProcess);
+DWORD getProcessBinaryType(HANDLE hProcess = NULL);
 WORD getWindowsArchitecture(VOID);
 
 BOOL getProcessList(std::vector<PROCESSENTRY32>& processes, DWORD dwPID = 0);
