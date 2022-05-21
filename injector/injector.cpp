@@ -19,9 +19,7 @@ void OnInject(HWND hwnd, BOOL bInject)
     }
 
     TCHAR szDllFile[MAX_PATH];
-    GetModuleFileName(NULL, szDllFile, _countof(szDllFile));
-    PathRemoveFileSpec(szDllFile);
-    PathAppend(szDllFile, PAYLOAD_NAME TEXT(".dll"));
+    getSameFolderPathName(szDllFile, PAYLOAD_NAME TEXT(".dll"));
     //MessageBox(NULL, szDllFile, NULL, 0);
 
     if (bInject)

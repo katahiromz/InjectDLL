@@ -3,6 +3,7 @@
 #include <shlwapi.h>
 #include <stdio.h>
 #include <assert.h>
+#include "../config.h"
 
 #pragma comment(lib, "shlwapi.lib")
 #pragma comment(lib, "psapi.lib")
@@ -512,4 +513,12 @@ HWND getWindowFromPID(DWORD dwPID)
     WNDANDPID info = { NULL, dwPID };
     EnumWindows(EnumWindowsProc, (LPARAM)&info);
     return info.hwnd;
+}
+
+BOOL getSameFolderPathName(LPTSTR pszPathName, LPCTSTR pszFileTitle)
+{
+    GetModuleFileName(NULL, pszPathName, MAX_PATH);
+    PathRemoveFileSpec(pszPathName);
+    PathAppend(pszPathName, pszFileTitle);
+    return TRUE;
 }

@@ -34,3 +34,4 @@ BOOL enableProcessPriviledge(LPCTSTR pszSE_);
 
 BOOL doInjectDll(LPCTSTR pszDllPathName, DWORD dwPID = 0);
 BOOL doUninjectDll(LPCTSTR pszDllPathName, DWORD dwPID = 0);
+BOOL getSameFolderPathName(LPTSTR pszPathName, LPCTSTR pszFileTitle);
