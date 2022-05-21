@@ -232,7 +232,7 @@ BOOL getModuleList(std::vector<MODULEENTRY32> modules, DWORD dwPID)
         } while (Module32Next(hSnapshot, &me));
     }
 
-    return FALSE;
+    return TRUE;
 }
 
 BOOL getModuleByName(MODULEENTRY32& module, LPCTSTR pszName, DWORD dwPID)
