@@ -76,12 +76,12 @@ DWORD getProcessBinaryType(HANDLE hProcess)
     if (hProcess == NULL)
         hProcess = GetCurrentProcess();
 
-    WCHAR szPath[MAX_PATH];
-    if (!GetModuleFileNameExW(hProcess, NULL, szPath, _countof(szPath)))
+    TCHAR szPath[MAX_PATH];
+    if (!GetModuleFileNameEx(hProcess, NULL, szPath, _countof(szPath)))
         return -1;
 
     DWORD dwType;
-    if (!GetBinaryTypeW(szPath, &dwType))
+    if (!GetBinaryType(szPath, &dwType))
         return -1;
 
     return dwType;
