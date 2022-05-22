@@ -578,36 +578,22 @@ doImportTable(HMODULE hModule, PIMAGE_IMPORT_DESCRIPTOR pImport, LPCSTR pszFuncN
     return NULL;
 }
 
-LPVOID doHookAPI(LPCSTR pszModuleName, LPCSTR pszFuncName, LPVOID fnNew)
+LPVOID doHookAPI(HMODULE hModule, LPCSTR pszModuleName, LPCSTR pszFuncName, LPVOID fnNew)
 {
+    if (!fnNew)
+        return NULL;
     if (!pszFuncName)
         return NULL;
+    if (!hModule)
+        hModule = GetModuleHandleA(NULL);
 
-    for (INT i = 0; i < 2; i++)
-    {
-        HMODULE hModule = NULL;
-        if (i == 0)
-        {
-            if (pszModuleName)
-            {
-                hModule = GetModuleHandleA(pszModuleName);
-            }
-        }
-        else if (i == 1)
-        {
-            hModule = GetModuleHandleA(NULL);
-        }
-        if (!hModule)
-            continue;
-
-        DWORD dwSize;
-        PIMAGE_IMPORT_DESCRIPTOR pImport;
-        pImport = (PIMAGE_IMPORT_DESCRIPTOR)ImageDirectoryEntryToData(
-            hModule, TRUE, IMAGE_DIRECTORY_ENTRY_IMPORT, &dwSize);
-        LPVOID fnOriginal = doImportTable(hModule, pImport, pszFuncName, fnNew);
-        if (fnOriginal)
-            return fnOriginal;
-    }
+    DWORD dwSize;
+    PIMAGE_IMPORT_DESCRIPTOR pImport;
+    pImport = (PIMAGE_IMPORT_DESCRIPTOR)ImageDirectoryEntryToData(
+        hModule, TRUE, IMAGE_DIRECTORY_ENTRY_IMPORT, &dwSize);
+    LPVOID fnOriginal = doImportTable(hModule, pImport, pszFuncName, fnNew);
+    if (fnOriginal)
+        return fnOriginal;
 
     return NULL;
 }

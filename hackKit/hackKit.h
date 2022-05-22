@@ -36,6 +36,6 @@ BOOL doInjectDll(LPCTSTR pszDllPathName, DWORD dwPID = 0);
 BOOL doUninjectDll(LPCTSTR pszDllPathName, DWORD dwPID = 0);
 BOOL getSameFolderPathName(LPTSTR pszPathName, LPCTSTR pszFileTitle);
 
-LPVOID doHookAPI(LPCSTR pszModuleName, LPCSTR pszFuncName, LPVOID fnNew);
+LPVOID doHookAPI(HMODULE hTargetModule, LPCSTR pszModuleName, LPCSTR pszFuncName, LPVOID fnNew);
 BOOL startProcess(LPCTSTR cmdline, STARTUPINFO& si, PROCESS_INFORMATION& pi,
                   DWORD dwCreation = 0, LPCTSTR pszCurDir = NULL);
