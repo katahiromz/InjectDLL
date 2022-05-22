@@ -1,5 +1,6 @@
 #include <windows.h>
 #include "../config.h"
+#include "../hackKit/hackKit.h"
 
 // avoid LNK1104
 EXTERN_C __declspec(dllexport) int
